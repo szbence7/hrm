@@ -2,6 +2,7 @@
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { PlusIcon } from "@heroicons/react/24/outline";
+import { calculateBaseVacationDays, calculateAge } from "@/lib/vacationCalculator";
 import { useState } from "react";
 
 interface ExtraLeave {
@@ -22,37 +23,48 @@ interface EmployeeDetailsModalProps {
   };
 }
 
+const LEAVE_TYPES = [
+  { value: "maternity", label: "Maternity Leave" },
+  { value: "paternity", label: "Paternity Leave" },
+  { value: "study", label: "Study Leave" },
+  { value: "other", label: "Other" },
+] as const;
+
 export default function EmployeeDetailsModal({
   isOpen,
   onClose,
   employee,
 }: EmployeeDetailsModalProps) {
   const [extraLeaves, setExtraLeaves] = useState<ExtraLeave[]>([]);
-  const [newLeaveType, setNewLeaveType] = useState("");
-  const [newLeaveDays, setNewLeaveDays] = useState("");
-
-  const calculateBaseVacationDays = (birthDate: string) => {
-    const age = new Date().getFullYear() - new Date(birthDate).getFullYear();
-    // Basic vacation calculation logic (can be adjusted based on company policy)
-    if (age >= 45) return 30;
-    if (age >= 35) return 27;
-    return 25;
-  };
+  const [newLeaveType, setNewLeaveType] = useState<string>("");
+  const [newLeaveDays, setNewLeaveDays] = useState<string>("");
 
   const handleAddExtraLeave = () => {
     if (newLeaveType && newLeaveDays) {
-      setExtraLeaves([
-        ...extraLeaves,
-        { type: newLeaveType, days: parseInt(newLeaveDays) },
-      ]);
-      setNewLeaveType("");
-      setNewLeaveDays("");
+      const selectedLeaveType = LEAVE_TYPES.find(type => type.value === newLeaveType);
+      if (selectedLeaveType) {
+        setExtraLeaves([
+          ...extraLeaves,
+          { type: selectedLeaveType.label, days: parseInt(newLeaveDays) },
+        ]);
+        setNewLeaveType("");
+        setNewLeaveDays("");
+      }
     }
   };
 
-  const totalVacationDays =
-    calculateBaseVacationDays(employee.birthDate) +
-    extraLeaves.reduce((sum, leave) => sum + leave.days, 0);
+  const handleDaysChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    // Csak pozitív számokat engedünk meg
+    if (value === "" || parseInt(value) > 0) {
+      setNewLeaveDays(value);
+    }
+  };
+
+  const baseVacationDays = calculateBaseVacationDays(employee.birthDate);
+  const extraVacationDays = extraLeaves.reduce((sum, leave) => sum + leave.days, 0);
+  const totalVacationDays = baseVacationDays + extraVacationDays;
+  const age = calculateAge(employee.birthDate);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -87,7 +99,9 @@ export default function EmployeeDetailsModal({
                 </div>
                 <div>
                   <p className="text-sm text-gray-500 dark:text-gray-400">Birth Date</p>
-                  <p className="font-medium">{new Date(employee.birthDate).toLocaleDateString()}</p>
+                  <p className="font-medium">
+                    {new Date(employee.birthDate).toLocaleDateString()} ({age} years old)
+                  </p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-500 dark:text-gray-400">Status</p>
@@ -102,9 +116,12 @@ export default function EmployeeDetailsModal({
             <h4 className="text-lg font-semibold mb-4">Vacation Information</h4>
             <div className="space-y-4">
               <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
-                <p className="text-sm text-gray-500 dark:text-gray-400">Base Vacation Days</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">Base Vacation Days (by age)</p>
                 <p className="text-2xl font-semibold">
-                  {calculateBaseVacationDays(employee.birthDate)} days
+                  {baseVacationDays} days
+                </p>
+                <p className="text-sm text-gray-500 mt-1">
+                  Includes {baseVacationDays - 20} extra days based on age ({age} years)
                 </p>
               </div>
 
@@ -115,24 +132,27 @@ export default function EmployeeDetailsModal({
                   <select
                     value={newLeaveType}
                     onChange={(e) => setNewLeaveType(e.target.value)}
-                    className="flex-1 px-3 py-2 border rounded-lg"
+                    className="flex-1 px-3 py-2 border rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                   >
                     <option value="">Select leave type...</option>
-                    <option value="Maternity">Maternity Leave</option>
-                    <option value="Paternity">Paternity Leave</option>
-                    <option value="Study">Study Leave</option>
-                    <option value="Other">Other</option>
+                    {LEAVE_TYPES.map((type) => (
+                      <option key={type.value} value={type.value}>
+                        {type.label}
+                      </option>
+                    ))}
                   </select>
                   <input
                     type="number"
                     value={newLeaveDays}
-                    onChange={(e) => setNewLeaveDays(e.target.value)}
+                    onChange={handleDaysChange}
                     placeholder="Days"
-                    className="w-24 px-3 py-2 border rounded-lg"
+                    className="w-24 px-3 py-2 border rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                    min="1"
                   />
                   <button
                     onClick={handleAddExtraLeave}
                     className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                    disabled={!newLeaveType || !newLeaveDays}
                   >
                     <PlusIcon className="w-5 h-5" />
                   </button>
@@ -158,6 +178,11 @@ export default function EmployeeDetailsModal({
                 <p className="text-2xl font-semibold text-blue-600 dark:text-blue-400">
                   {totalVacationDays} days
                 </p>
+                {extraVacationDays > 0 && (
+                  <p className="text-sm text-blue-600 dark:text-blue-400 mt-1">
+                    ({baseVacationDays} base + {extraVacationDays} extra)
+                  </p>
+                )}
               </div>
             </div>
           </div>
