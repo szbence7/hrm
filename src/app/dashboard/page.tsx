@@ -1,12 +1,12 @@
 'use client';
 
-import { CalendarDaysIcon, ChartBarIcon, ClockIcon, UserGroupIcon } from '@heroicons/react/24/outline';
+import { CalendarDaysIcon, UserPlusIcon, GiftIcon, UserGroupIcon } from '@heroicons/react/24/outline';
 
 const metrics = [
   { label: 'Total Employees', value: '156' },
   { label: 'Pending Leave Requests', value: '8' },
-  { label: 'Upcoming Holidays', value: '3' },
-  { label: 'Remote Today', value: '45' },
+  { label: 'Upcoming Birthdays', value: '3' },
+  { label: 'New Hires', value: '4' },
 ];
 
 const pendingLeaveRequests = [
@@ -69,15 +69,28 @@ export default function DashboardPage() {
 
         <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700">
           <div className="flex items-center">
-            <div className="p-2 bg-green-100 dark:bg-green-900 rounded-lg">
-              <ClockIcon className="w-6 h-6 text-green-600 dark:text-green-400" />
+            <div className="p-2 bg-orange-100 dark:bg-orange-900 rounded-lg">
+              <UserPlusIcon className="w-6 h-6 text-orange-600 dark:text-orange-400" />
             </div>
             <div className="ml-4">
-              <h3 className="text-sm text-gray-500 dark:text-gray-400">Average Attendance</h3>
-              <p className="text-2xl font-semibold mt-1 dark:text-white">95%</p>
+              <h3 className="text-sm text-gray-500 dark:text-gray-400">New Hires</h3>
+              <p className="text-2xl font-semibold mt-1 dark:text-white">4</p>
             </div>
           </div>
-          <p className="text-sm text-green-600 dark:text-green-400 mt-4">+1.2% from last month</p>
+          <p className="text-sm text-orange-600 dark:text-orange-400 mt-4">3 in onboarding</p>
+        </div>
+
+        <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700">
+          <div className="flex items-center">
+            <div className="p-2 bg-pink-100 dark:bg-pink-900 rounded-lg">
+              <GiftIcon className="w-6 h-6 text-pink-600 dark:text-pink-400" />
+            </div>
+            <div className="ml-4">
+              <h3 className="text-sm text-gray-500 dark:text-gray-400">Upcoming Birthdays</h3>
+              <p className="text-2xl font-semibold mt-1 dark:text-white">3</p>
+            </div>
+          </div>
+          <p className="text-sm text-pink-600 dark:text-pink-400 mt-4">Next one in 2 days</p>
         </div>
 
         <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700">
@@ -91,19 +104,6 @@ export default function DashboardPage() {
             </div>
           </div>
           <p className="text-sm text-yellow-600 dark:text-yellow-400 mt-4">5 pending approval</p>
-        </div>
-
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700">
-          <div className="flex items-center">
-            <div className="p-2 bg-orange-100 dark:bg-orange-900 rounded-lg">
-              <ChartBarIcon className="w-6 h-6 text-orange-600 dark:text-orange-400" />
-            </div>
-            <div className="ml-4">
-              <h3 className="text-sm text-gray-500 dark:text-gray-400">Performance</h3>
-              <p className="text-2xl font-semibold mt-1 dark:text-white">85%</p>
-            </div>
-          </div>
-          <p className="text-sm text-green-600 dark:text-green-400 mt-4">+2.5% from last quarter</p>
         </div>
       </div>
 

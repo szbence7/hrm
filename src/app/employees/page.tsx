@@ -2,9 +2,47 @@
 
 import { MagnifyingGlassIcon, PlusIcon } from '@heroicons/react/24/outline';
 import { useState } from 'react';
+import EmployeeDetailsModal from '@/components/EmployeeDetailsModal';
+
+interface Employee {
+  name: string;
+  email: string;
+  department: string;
+  position: string;
+  status: string;
+  birthDate: string;
+}
+
+const MOCK_EMPLOYEES: Employee[] = [
+  {
+    name: 'Sarah Chen',
+    email: 'sarah.chen@company.com',
+    department: 'Engineering',
+    position: 'Senior Developer',
+    status: 'Active',
+    birthDate: '1988-05-15',
+  },
+  {
+    name: 'Alex Kim',
+    email: 'alex.kim@company.com',
+    department: 'Marketing',
+    position: 'Marketing Manager',
+    status: 'On Leave',
+    birthDate: '1992-09-23',
+  },
+  {
+    name: 'Maria Garcia',
+    email: 'maria.garcia@company.com',
+    department: 'Sales',
+    position: 'Sales Representative',
+    status: 'Inactive',
+    birthDate: '1985-03-10',
+  },
+];
 
 export default function EmployeesPage() {
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
 
   return (
     <div className="space-y-6">
@@ -60,99 +98,48 @@ export default function EmployeesPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-                <tr className="hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                  <td className="py-4">
-                    <div className="flex items-center">
-                      <img
-                        src="https://ui-avatars.com/api/?name=Sarah+Chen"
-                        alt="Sarah Chen"
-                        className="w-8 h-8 rounded-full"
-                      />
-                      <div className="ml-3">
-                        <p className="text-sm font-medium text-gray-900 dark:text-white">Sarah Chen</p>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">sarah.chen@company.com</p>
+                {MOCK_EMPLOYEES.map((employee) => (
+                  <tr key={employee.email} className="hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                    <td className="py-4">
+                      <div className="flex items-center">
+                        <img
+                          src={`https://ui-avatars.com/api/?name=${encodeURIComponent(employee.name)}`}
+                          alt={employee.name}
+                          className="w-8 h-8 rounded-full"
+                        />
+                        <div className="ml-3">
+                          <p className="text-sm font-medium text-gray-900 dark:text-white">{employee.name}</p>
+                          <p className="text-sm text-gray-500 dark:text-gray-400">{employee.email}</p>
+                        </div>
                       </div>
-                    </div>
-                  </td>
-                  <td className="py-4">
-                    <span className="text-sm text-gray-900 dark:text-white">Engineering</span>
-                  </td>
-                  <td className="py-4">
-                    <span className="text-sm text-gray-900 dark:text-white">Senior Developer</span>
-                  </td>
-                  <td className="py-4">
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">
-                      Active
-                    </span>
-                  </td>
-                  <td className="py-4">
-                    <button className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">
-                      View Details
-                    </button>
-                  </td>
-                </tr>
-                <tr className="hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                  <td className="py-4">
-                    <div className="flex items-center">
-                      <img
-                        src="https://ui-avatars.com/api/?name=Alex+Kim"
-                        alt="Alex Kim"
-                        className="w-8 h-8 rounded-full"
-                      />
-                      <div className="ml-3">
-                        <p className="text-sm font-medium text-gray-900 dark:text-white">Alex Kim</p>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">alex.kim@company.com</p>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="py-4">
-                    <span className="text-sm text-gray-900 dark:text-white">Marketing</span>
-                  </td>
-                  <td className="py-4">
-                    <span className="text-sm text-gray-900 dark:text-white">Marketing Manager</span>
-                  </td>
-                  <td className="py-4">
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300">
-                      On Leave
-                    </span>
-                  </td>
-                  <td className="py-4">
-                    <button className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">
-                      View Details
-                    </button>
-                  </td>
-                </tr>
-                <tr className="hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                  <td className="py-4">
-                    <div className="flex items-center">
-                      <img
-                        src="https://ui-avatars.com/api/?name=Maria+Garcia"
-                        alt="Maria Garcia"
-                        className="w-8 h-8 rounded-full"
-                      />
-                      <div className="ml-3">
-                        <p className="text-sm font-medium text-gray-900 dark:text-white">Maria Garcia</p>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">maria.garcia@company.com</p>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="py-4">
-                    <span className="text-sm text-gray-900 dark:text-white">Sales</span>
-                  </td>
-                  <td className="py-4">
-                    <span className="text-sm text-gray-900 dark:text-white">Sales Representative</span>
-                  </td>
-                  <td className="py-4">
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300">
-                      Inactive
-                    </span>
-                  </td>
-                  <td className="py-4">
-                    <button className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">
-                      View Details
-                    </button>
-                  </td>
-                </tr>
+                    </td>
+                    <td className="py-4">
+                      <span className="text-sm text-gray-900 dark:text-white">{employee.department}</span>
+                    </td>
+                    <td className="py-4">
+                      <span className="text-sm text-gray-900 dark:text-white">{employee.position}</span>
+                    </td>
+                    <td className="py-4">
+                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                        employee.status === 'Active'
+                          ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300'
+                          : employee.status === 'On Leave'
+                          ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300'
+                          : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
+                      }`}>
+                        {employee.status}
+                      </span>
+                    </td>
+                    <td className="py-4">
+                      <button
+                        onClick={() => setSelectedEmployee(employee)}
+                        className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300"
+                      >
+                        View Details
+                      </button>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
@@ -160,7 +147,7 @@ export default function EmployeesPage() {
           <div className="mt-6 flex items-center justify-between">
             <p className="text-sm text-gray-500 dark:text-gray-400">
               Showing <span className="font-medium">1</span> to <span className="font-medium">3</span> of{' '}
-              <span className="font-medium">12</span> results
+              <span className="font-medium">3</span> results
             </p>
             <div className="flex space-x-2">
               <button className="px-3 py-1 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 text-sm disabled:opacity-50 disabled:cursor-not-allowed" disabled>
@@ -173,6 +160,14 @@ export default function EmployeesPage() {
           </div>
         </div>
       </div>
+
+      {selectedEmployee && (
+        <EmployeeDetailsModal
+          isOpen={!!selectedEmployee}
+          onClose={() => setSelectedEmployee(null)}
+          employee={selectedEmployee}
+        />
+      )}
     </div>
   );
 } 
