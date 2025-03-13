@@ -1,0 +1,116 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+{
+  "rules": {
+    "project-structure": {
+      "description": "Ensure a modular Next.js structure with separate components for pages, sidebar, and other UI elements.",
+      "enforce": true,
+      "structure": {
+        "components": {
+          "description": "All reusable UI components (e.g., Sidebar, Navbar, Buttons) must be placed in the components directory.",
+          "path": "src/components"
+        },
+        "pages": {
+          "description": "Each route should be a separate file or folder inside the pages directory.",
+          "path": "src/app"
+        },
+        "layouts": {
+          "description": "Layouts, such as the sidebar layout, must be placed in a dedicated directory.",
+          "path": "src/layouts"
+        },
+        "hooks": {
+          "description": "Custom React hooks should be placed in the hooks directory.",
+          "path": "src/hooks"
+        },
+        "lib": {
+          "description": "Utility functions and API interactions should be stored in the lib directory.",
+          "path": "src/lib"
+        }
+      }
+    },
+    "dependencies": {
+      "description": "Ensure the latest stable versions of Next.js, Radix UI, and Tailwind CSS.",
+      "enforce": true,
+      "packages": {
+        "next": "latest",
+        "react": "latest",
+        "react-dom": "latest",
+        "tailwindcss": "latest",
+        "@radix-ui/react-*": "latest"
+      }
+    },
+    "styling": {
+      "description": "Use Tailwind CSS for styling with a modern and clean design.",
+      "enforce": true,
+      "rules": {
+        "use-tailwind": true,
+        "tailwind-config": "tailwind.config.js"
+      }
+    },
+    "component-structure": {
+      "description": "Each major UI section must be a separate React component.",
+      "enforce": true,
+      "rules": {
+        "sidebar": {
+          "description": "Sidebar must be its own component and dynamically update content.",
+          "file": "src/components/Sidebar.tsx"
+        },
+        "pages": {
+          "description": "Each HRM page (Dashboard, Employees, Reports, etc.) should be a separate component.",
+          "files": [
+            "src/app/dashboard/page.tsx",
+            "src/app/employees/page.tsx",
+            "src/app/reports/page.tsx"
+          ]
+        }
+      }
+    },
+    "routing": {
+      "description": "Use Next.js App Router (app directory) for navigation.",
+      "enforce": true,
+      "rules": {
+        "dynamic-routing": true,
+        "use-layouts": true
+      }
+    },
+    "code-consistency": {
+      "description": "Ensure code consistency across all components and pages.",
+      "enforce": true,
+      "rules": {
+        "use-typescript": true,
+        "use-eslint": true,
+        "use-prettier": true,
+        "import-order": "top-level dependencies first, local components last"
+      }
+    },
+    "modification-rules": {
+      "description": "Only modify what is explicitly requested. If a technical change is requested, the design must remain untouched.",
+      "enforce": true,
+      "rules": {
+        "modify-only-on-request": true,
+        "preserve-design-on-technical-changes": true
+      }
+    },
+    "mobile-optimization": {
+      "description": "Ensure all components are fully responsive and optimized for mobile devices.",
+      "enforce": true,
+      "rules": {
+        "responsive-sidebar": {
+          "description": "Sidebar must be collapsible or adapt to mobile screens.",
+          "enforce": true
+        },
+        "fluid-layout": {
+          "description": "Use flex/grid layouts that adapt to different screen sizes.",
+          "enforce": true
+        },
+        "touch-friendly-ui": {
+          "description": "Ensure UI elements are touch-friendly (e.g., larger tap targets, proper spacing).",
+          "enforce": true
+        }
+      }
+    }
+  }
+}
