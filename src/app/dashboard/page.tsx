@@ -110,66 +110,76 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
           <div className="p-6">
-            <h2 className="text-lg font-semibold mb-4 dark:text-white">Recent Activity</h2>
+            <h2 className="text-lg font-semibold mb-4 dark:text-white">Holiday Requests</h2>
             <div className="space-y-4">
-              <div className="flex items-center">
-                <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                <p className="ml-3 text-sm text-gray-600 dark:text-gray-400">
-                  <span className="font-medium text-gray-900 dark:text-white">Sarah Chen</span> submitted a leave request
-                </p>
-                <span className="ml-auto text-sm text-gray-500 dark:text-gray-400">2h ago</span>
-              </div>
-              <div className="flex items-center">
-                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                <p className="ml-3 text-sm text-gray-600 dark:text-gray-400">
-                  <span className="font-medium text-gray-900 dark:text-white">Alex Kim</span> completed performance review
-                </p>
-                <span className="ml-auto text-sm text-gray-500 dark:text-gray-400">4h ago</span>
-              </div>
-              <div className="flex items-center">
-                <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-                <p className="ml-3 text-sm text-gray-600 dark:text-gray-400">
-                  <span className="font-medium text-gray-900 dark:text-white">Maria Garcia</span> joined the team
-                </p>
-                <span className="ml-auto text-sm text-gray-500 dark:text-gray-400">1d ago</span>
-              </div>
+              {pendingLeaveRequests.map((request) => (
+                <div key={request.id} className="flex items-start justify-between border-b border-gray-200 dark:border-gray-700 pb-4">
+                  <div>
+                    <p className="font-medium text-gray-900 dark:text-white">{request.employeeName}</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      {request.type} • {request.department}
+                    </p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      {request.startDate} - {request.endDate}
+                    </p>
+                  </div>
+                  <div className="flex space-x-2">
+                    <button className="px-3 py-1 text-sm bg-green-100 text-green-600 rounded-md hover:bg-green-200 dark:bg-green-900 dark:text-green-400">
+                      Approve
+                    </button>
+                    <button className="px-3 py-1 text-sm bg-red-100 text-red-600 rounded-md hover:bg-red-200 dark:bg-red-900 dark:text-red-400">
+                      Decline
+                    </button>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
 
         <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
           <div className="p-6">
-            <h2 className="text-lg font-semibold mb-4 dark:text-white">Upcoming Events</h2>
+            <h2 className="text-lg font-semibold mb-4 dark:text-white">Today's Schedule</h2>
             <div className="space-y-4">
-              <div className="flex items-start">
-                <div className="flex-shrink-0 w-12 text-center">
-                  <p className="text-lg font-semibold text-gray-900 dark:text-white">15</p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">MAR</p>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  <div className="ml-3">
+                    <p className="font-medium text-gray-900 dark:text-white">Morning Shift</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">8:00 AM - 4:00 PM</p>
+                  </div>
                 </div>
-                <div className="ml-4">
-                  <h3 className="text-sm font-medium text-gray-900 dark:text-white">Team Building Event</h3>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">2:00 PM - 5:00 PM</p>
-                </div>
+                <span className="text-sm text-gray-500 dark:text-gray-400">45 employees</span>
               </div>
-              <div className="flex items-start">
-                <div className="flex-shrink-0 w-12 text-center">
-                  <p className="text-lg font-semibold text-gray-900 dark:text-white">22</p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">MAR</p>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                  <div className="ml-3">
+                    <p className="font-medium text-gray-900 dark:text-white">Afternoon Shift</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">4:00 PM - 12:00 AM</p>
+                  </div>
                 </div>
-                <div className="ml-4">
-                  <h3 className="text-sm font-medium text-gray-900 dark:text-white">Quarterly Review</h3>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">10:00 AM - 12:00 PM</p>
-                </div>
+                <span className="text-sm text-gray-500 dark:text-gray-400">32 employees</span>
               </div>
-              <div className="flex items-start">
-                <div className="flex-shrink-0 w-12 text-center">
-                  <p className="text-lg font-semibold text-gray-900 dark:text-white">28</p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">MAR</p>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                  <div className="ml-3">
+                    <p className="font-medium text-gray-900 dark:text-white">Remote Work</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">Flexible Hours</p>
+                  </div>
                 </div>
-                <div className="ml-4">
-                  <h3 className="text-sm font-medium text-gray-900 dark:text-white">Training Workshop</h3>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">1:00 PM - 4:00 PM</p>
+                <span className="text-sm text-gray-500 dark:text-gray-400">28 employees</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                  <div className="ml-3">
+                    <p className="font-medium text-gray-900 dark:text-white">On Leave</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">Approved Absence</p>
+                  </div>
                 </div>
+                <span className="text-sm text-gray-500 dark:text-gray-400">12 employees</span>
               </div>
             </div>
           </div>
