@@ -2,7 +2,7 @@
 
 import * as Dialog from '@radix-ui/react-dialog';
 import * as Tabs from '@radix-ui/react-tabs';
-import { useState } from 'react';
+import { useState, FormEvent } from 'react';
 
 const holidays = [
   {
@@ -22,31 +22,6 @@ const holidays = [
   // Add more holidays as needed
 ];
 
-const holidayRequests = [
-  {
-    id: 1,
-    employee: 'John Doe',
-    startDate: '2024-04-15',
-    endDate: '2024-04-20',
-    type: 'Vacation',
-    reason: 'Family vacation',
-    department: 'Engineering',
-    status: 'pending',
-    requestedOn: '2024-03-10',
-  },
-  {
-    id: 2,
-    employee: 'Sarah Smith',
-    startDate: '2024-05-01',
-    endDate: '2024-05-02',
-    type: 'Personal Leave',
-    reason: 'Medical appointment',
-    department: 'Marketing',
-    status: 'pending',
-    requestedOn: '2024-03-12',
-  },
-];
-
 const upcomingHolidays = holidays.filter(
   (holiday) => new Date(holiday.date) >= new Date()
 );
@@ -63,6 +38,38 @@ const getFirstDayOfMonth = (year: number, month: number) => {
 export default function HolidaysPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [currentDate, setCurrentDate] = useState(new Date());
+  const [holidayRequests, setHolidayRequests] = useState([
+    {
+      id: 1,
+      employee: 'John Doe',
+      startDate: '2024-04-15',
+      endDate: '2024-04-20',
+      type: 'Vacation',
+      reason: 'Family vacation',
+      department: 'Engineering',
+      status: 'pending',
+      requestedOn: '2024-03-10',
+    },
+    {
+      id: 2,
+      employee: 'Sarah Smith',
+      startDate: '2024-05-01',
+      endDate: '2024-05-02',
+      type: 'Personal Leave',
+      reason: 'Medical appointment',
+      department: 'Marketing',
+      status: 'pending',
+      requestedOn: '2024-03-12',
+    },
+  ]);
+  const [formData, setFormData] = useState({
+    name: '',
+    startDate: '',
+    endDate: '',
+    type: 'Public Holiday',
+    description: '',
+  });
+
   const currentMonth = currentDate.getMonth();
   const currentYear = currentDate.getFullYear();
 
@@ -82,6 +89,40 @@ export default function HolidaysPage() {
 
   const nextMonth = () => {
     setCurrentDate(new Date(currentYear, currentMonth + 1));
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    
+    const newRequest = {
+      id: holidayRequests.length + 1,
+      employee: 'Current User', // This should come from auth context in a real app
+      startDate: formData.startDate,
+      endDate: formData.endDate,
+      type: formData.type,
+      reason: formData.description,
+      department: 'Current Department', // This should come from auth context in a real app
+      status: 'pending',
+      requestedOn: new Date().toISOString().split('T')[0],
+    };
+
+    setHolidayRequests(prev => [...prev, newRequest]);
+    setFormData({
+      name: '',
+      startDate: '',
+      endDate: '',
+      type: 'Public Holiday',
+      description: '',
+    });
+    setIsDialogOpen(false);
   };
 
   return (
@@ -180,43 +221,67 @@ export default function HolidaysPage() {
 
         <Tabs.Content value="requests" className="space-y-4">
           <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
-            <div className="p-4 sm:p-6 space-y-6">
-              {holidayRequests.map((request) => (
-                <div
-                  key={request.id}
-                  className="flex flex-col sm:flex-row gap-4 pb-6 border-b border-gray-100 dark:border-gray-700 last:pb-0 last:border-0"
-                >
-                  <div className="flex-1">
-                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
-                      <h3 className="text-base font-semibold text-gray-900 dark:text-white">
-                        {request.employee} • {request.department}
-                      </h3>
-                      <div className="flex gap-2">
-                        <span className="inline-block px-3 py-1 text-sm font-medium bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-300 rounded">
-                          Pending
-                        </span>
-                        <span className="inline-block px-3 py-1 text-sm font-medium bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-300 rounded">
+            <div className="overflow-x-auto">
+              <div className="min-w-full p-4 sm:p-0">
+                <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                  <thead className="bg-gray-50 dark:bg-gray-900">
+                    <tr>
+                      <th className="px-4 sm:px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                        Employee
+                      </th>
+                      <th className="px-4 sm:px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                        Type
+                      </th>
+                      <th className="px-4 sm:px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                        Dates
+                      </th>
+                      <th className="px-4 sm:px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                        Status
+                      </th>
+                      <th className="px-4 sm:px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                        Actions
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                    {holidayRequests.map((request) => (
+                      <tr key={request.id}>
+                        <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
+                          {request.employee} • {request.department}
+                        </td>
+                        <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                           {request.type}
-                        </span>
-                      </div>
-                    </div>
-                    <div>
-                      <p className="text-base mt-3 text-gray-900 dark:text-white">{request.reason}</p>
-                      <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-                        Requested on: {new Date(request.requestedOn).toLocaleDateString()}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-                    <button className="w-full sm:w-auto px-4 py-3 sm:py-2 text-base sm:text-sm bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
-                      Accept
-                    </button>
-                    <button className="w-full sm:w-auto px-4 py-3 sm:py-2 text-base sm:text-sm bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
-                      Decline
-                    </button>
-                  </div>
-                </div>
-              ))}
+                        </td>
+                        <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                          {new Date(request.startDate).toLocaleDateString('en-US', {
+                            month: 'short',
+                            day: 'numeric',
+                          })} - {new Date(request.endDate).toLocaleDateString('en-US', {
+                            month: 'short',
+                            day: 'numeric',
+                            year: 'numeric',
+                          })}
+                        </td>
+                        <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
+                          <span className="inline-block px-3 py-1 text-sm font-medium bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-300 rounded">
+                            {request.status}
+                          </span>
+                        </td>
+                        <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                          <div className="flex gap-2">
+                            <button className="text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-300">
+                              Accept
+                            </button>
+                            <button className="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300">
+                              Decline
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </Tabs.Content>
@@ -346,33 +411,65 @@ export default function HolidaysPage() {
             <Dialog.Title className="text-lg font-semibold dark:text-white mb-4">
               Add Holiday
             </Dialog.Title>
-            <form className="space-y-4">
+            <form className="space-y-4" onSubmit={handleSubmit}>
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                   Holiday Name
                 </label>
                 <input
                   type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
                   className="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white px-3 py-2"
                   placeholder="e.g., Christmas Day"
+                  required
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Date
+                  Start Date
                 </label>
                 <input
                   type="date"
+                  name="startDate"
+                  value={formData.startDate}
+                  onChange={handleInputChange}
                   className="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white px-3 py-2"
+                  required
                 />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  End Date
+                </label>
+                <input
+                  type="date"
+                  name="endDate"
+                  value={formData.endDate}
+                  onChange={handleInputChange}
+                  className="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white px-3 py-2"
+                  required
+                />
+                <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                  This should be the last day of your holiday, not the day you return to work
+                </p>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                   Type
                 </label>
-                <select className="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white px-3 py-2">
+                <select
+                  name="type"
+                  value={formData.type}
+                  onChange={handleInputChange}
+                  className="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white px-3 py-2"
+                >
                   <option>Public Holiday</option>
                   <option>Company Holiday</option>
+                  <option>Vacation</option>
+                  <option>Sick Leave</option>
+                  <option>Personal Leave</option>
                 </select>
               </div>
               <div>
@@ -380,9 +477,13 @@ export default function HolidaysPage() {
                   Description
                 </label>
                 <textarea
+                  name="description"
+                  value={formData.description}
+                  onChange={handleInputChange}
                   className="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white px-3 py-2"
                   rows={3}
                   placeholder="Add a description..."
+                  required
                 />
               </div>
               <div className="flex justify-end gap-2 mt-6">

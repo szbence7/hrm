@@ -1,7 +1,7 @@
 'use client';
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { PlusIcon } from "@heroicons/react/24/outline";
+import { PlusIcon, PencilIcon, XMarkIcon, CheckIcon } from "@heroicons/react/24/outline";
 import { calculateBaseVacationDays, calculateAge } from "@/lib/vacationCalculator";
 import { useState } from "react";
 
@@ -30,14 +30,42 @@ const LEAVE_TYPES = [
   { value: "other", label: "Other" },
 ] as const;
 
+const DEPARTMENTS = ["Engineering", "Marketing", "Sales", "HR", "Finance", "Operations"] as const;
+const STATUSES = ["Active", "On Leave", "Inactive"] as const;
+
 export default function EmployeeDetailsModal({
   isOpen,
   onClose,
-  employee,
+  employee: initialEmployee,
 }: EmployeeDetailsModalProps) {
+  const [isEditing, setIsEditing] = useState(false);
+  const [employee, setEmployee] = useState(initialEmployee);
+  const [editedEmployee, setEditedEmployee] = useState(initialEmployee);
   const [extraLeaves, setExtraLeaves] = useState<ExtraLeave[]>([]);
   const [newLeaveType, setNewLeaveType] = useState<string>("");
   const [newLeaveDays, setNewLeaveDays] = useState<string>("");
+
+  const handleStartEdit = () => {
+    setIsEditing(true);
+    setEditedEmployee(employee);
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditing(false);
+    setEditedEmployee(employee);
+  };
+
+  const handleSaveEdit = () => {
+    setEmployee(editedEmployee);
+    setIsEditing(false);
+  };
+
+  const handleInputChange = (field: keyof typeof employee, value: string) => {
+    setEditedEmployee(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
 
   const handleAddExtraLeave = () => {
     if (newLeaveType && newLeaveDays) {
@@ -70,7 +98,37 @@ export default function EmployeeDetailsModal({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl">
         <DialogHeader>
-          <DialogTitle>Employee Details</DialogTitle>
+          <div className="flex justify-between items-center">
+            <DialogTitle>Employee Details</DialogTitle>
+            <div className="space-x-2">
+              {!isEditing ? (
+                <button
+                  onClick={handleStartEdit}
+                  className="inline-flex items-center px-3 py-1.5 text-sm bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
+                >
+                  <PencilIcon className="w-4 h-4 mr-1" />
+                  Edit
+                </button>
+              ) : (
+                <>
+                  <button
+                    onClick={handleCancelEdit}
+                    className="inline-flex items-center px-3 py-1.5 text-sm bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
+                  >
+                    <XMarkIcon className="w-4 h-4 mr-1" />
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleSaveEdit}
+                    className="inline-flex items-center px-3 py-1.5 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                  >
+                    <CheckIcon className="w-4 h-4 mr-1" />
+                    Save
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
         </DialogHeader>
         
         <div className="mt-6 space-y-8">
@@ -86,28 +144,97 @@ export default function EmployeeDetailsModal({
               />
             </div>
             <div className="flex-1">
-              <h3 className="text-xl font-semibold">{employee.name}</h3>
-              <p className="text-gray-500 dark:text-gray-400">{employee.email}</p>
-              <div className="mt-4 grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">Department</p>
-                  <p className="font-medium">{employee.department}</p>
+              {isEditing ? (
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm text-gray-500 dark:text-gray-400">Name</label>
+                    <input
+                      type="text"
+                      value={editedEmployee.name}
+                      onChange={(e) => handleInputChange('name', e.target.value)}
+                      className="mt-1 w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm text-gray-500 dark:text-gray-400">Email</label>
+                    <input
+                      type="email"
+                      value={editedEmployee.email}
+                      onChange={(e) => handleInputChange('email', e.target.value)}
+                      className="mt-1 w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm text-gray-500 dark:text-gray-400">Department</label>
+                      <select
+                        value={editedEmployee.department}
+                        onChange={(e) => handleInputChange('department', e.target.value)}
+                        className="mt-1 w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                      >
+                        {DEPARTMENTS.map((dept) => (
+                          <option key={dept} value={dept}>{dept}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm text-gray-500 dark:text-gray-400">Position</label>
+                      <input
+                        type="text"
+                        value={editedEmployee.position}
+                        onChange={(e) => handleInputChange('position', e.target.value)}
+                        className="mt-1 w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm text-gray-500 dark:text-gray-400">Birth Date</label>
+                      <input
+                        type="date"
+                        value={editedEmployee.birthDate}
+                        onChange={(e) => handleInputChange('birthDate', e.target.value)}
+                        className="mt-1 w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm text-gray-500 dark:text-gray-400">Status</label>
+                      <select
+                        value={editedEmployee.status}
+                        onChange={(e) => handleInputChange('status', e.target.value)}
+                        className="mt-1 w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                      >
+                        {STATUSES.map((status) => (
+                          <option key={status} value={status}>{status}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">Position</p>
-                  <p className="font-medium">{employee.position}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">Birth Date</p>
-                  <p className="font-medium">
-                    {new Date(employee.birthDate).toLocaleDateString()} ({age} years old)
-                  </p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">Status</p>
-                  <p className="font-medium">{employee.status}</p>
-                </div>
-              </div>
+              ) : (
+                <>
+                  <h3 className="text-xl font-semibold">{employee.name}</h3>
+                  <p className="text-gray-500 dark:text-gray-400">{employee.email}</p>
+                  <div className="mt-4 grid grid-cols-2 gap-4">
+                    <div>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">Department</p>
+                      <p className="font-medium">{employee.department}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">Position</p>
+                      <p className="font-medium">{employee.position}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">Birth Date</p>
+                      <p className="font-medium">
+                        {new Date(employee.birthDate).toLocaleDateString()} ({age} years old)
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">Status</p>
+                      <p className="font-medium">{employee.status}</p>
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
           </div>
 
