@@ -112,6 +112,13 @@ export default function EmployeeDashboard() {
     return date.toISOString().split('T')[0];
   };
 
+  // Add a date formatting helper function
+  const formatDate = (dateString: string, options: Intl.DateTimeFormatOptions) => {
+    const date = new Date(dateString);
+    // Use en-GB for consistent date formatting
+    return date.toLocaleDateString('en-GB', options);
+  };
+
   const getDateLabel = (date: Date) => {
     const selectedDay = new Date(date);
     const today = new Date(baseDate);
@@ -127,7 +134,7 @@ export default function EmployeeDashboard() {
     if (diffDays === 1) return 'Tomorrow';
     if (diffDays === -1) return 'Yesterday';
     
-    return selectedDay.toLocaleDateString('en-US', {
+    return selectedDay.toLocaleDateString('en-GB', {
       weekday: 'long',
       month: 'long',
       day: 'numeric',
@@ -218,18 +225,21 @@ export default function EmployeeDashboard() {
                     {request.type}
                   </h3>
                   <p className="text-gray-500 mt-1">
-                    {new Date(request.startDate).toLocaleDateString('en-US', {
+                    {formatDate(request.startDate, {
                       month: 'long',
                       day: 'numeric',
-                    })} -{' '}
-                    {new Date(request.endDate).toLocaleDateString('en-US', {
+                    })} - {formatDate(request.endDate, {
                       month: 'long',
                       day: 'numeric',
                       year: 'numeric',
                     })}
                   </p>
                   <p className="text-sm text-gray-500 mt-1">
-                    Requested on: {new Date(request.requestedOn).toLocaleDateString()}
+                    Requested on: {formatDate(request.requestedOn, {
+                      year: 'numeric',
+                      month: 'numeric',
+                      day: 'numeric',
+                    })}
                   </p>
                 </div>
                 <span className="px-3 py-1 text-sm font-medium rounded-full bg-yellow-100 text-yellow-800">
@@ -257,7 +267,7 @@ export default function EmployeeDashboard() {
                   </h3>
                   <p className="text-gray-500 mt-1">
                     {holiday.type === 'public' ? (
-                      new Date(holiday.date).toLocaleDateString('en-US', {
+                      formatDate(holiday.date, {
                         weekday: 'long',
                         year: 'numeric',
                         month: 'long',
@@ -265,11 +275,10 @@ export default function EmployeeDashboard() {
                       })
                     ) : (
                       <>
-                        {new Date(holiday.startDate).toLocaleDateString('en-US', {
+                        {formatDate(holiday.startDate, {
                           month: 'long',
                           day: 'numeric',
-                        })} -{' '}
-                        {new Date(holiday.endDate).toLocaleDateString('en-US', {
+                        })} - {formatDate(holiday.endDate, {
                           month: 'long',
                           day: 'numeric',
                           year: 'numeric',

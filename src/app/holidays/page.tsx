@@ -125,6 +125,13 @@ export default function HolidaysPage() {
     setIsDialogOpen(false);
   };
 
+  // Add a date formatting helper function
+  const formatDate = (dateString: string, options: Intl.DateTimeFormatOptions) => {
+    const date = new Date(dateString);
+    // Use en-GB for consistent date formatting
+    return date.toLocaleDateString('en-GB', options);
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-0">
@@ -195,7 +202,7 @@ export default function HolidaysPage() {
                           {holiday.name}
                         </td>
                         <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                          {new Date(holiday.date).toLocaleDateString('en-US', {
+                          {formatDate(holiday.date, {
                             weekday: 'long',
                             year: 'numeric',
                             month: 'long',
@@ -253,10 +260,10 @@ export default function HolidaysPage() {
                           {request.type}
                         </td>
                         <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                          {new Date(request.startDate).toLocaleDateString('en-US', {
+                          {formatDate(request.startDate, {
                             month: 'short',
                             day: 'numeric',
-                          })} - {new Date(request.endDate).toLocaleDateString('en-US', {
+                          })} - {formatDate(request.endDate, {
                             month: 'short',
                             day: 'numeric',
                             year: 'numeric',
@@ -314,7 +321,7 @@ export default function HolidaysPage() {
                           {holiday.name}
                         </td>
                         <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                          {new Date(holiday.date).toLocaleDateString('en-US', {
+                          {formatDate(holiday.date, {
                             weekday: 'long',
                             year: 'numeric',
                             month: 'long',

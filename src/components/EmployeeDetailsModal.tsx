@@ -94,6 +94,13 @@ export default function EmployeeDetailsModal({
   const totalVacationDays = baseVacationDays + extraVacationDays;
   const age = calculateAge(employee.birthDate);
 
+  // Add a date formatting helper function
+  const formatDate = (dateString: string, options: Intl.DateTimeFormatOptions = {}) => {
+    const date = new Date(dateString);
+    // Use en-GB for consistent date formatting
+    return date.toLocaleDateString('en-GB', options);
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl">
@@ -225,7 +232,7 @@ export default function EmployeeDetailsModal({
                     <div>
                       <p className="text-sm text-gray-500 dark:text-gray-400">Birth Date</p>
                       <p className="font-medium">
-                        {new Date(employee.birthDate).toLocaleDateString()} ({age} years old)
+                        {formatDate(employee.birthDate)} ({age} years old)
                       </p>
                     </div>
                     <div>
