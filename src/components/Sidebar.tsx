@@ -3,14 +3,22 @@
 import * as NavigationMenu from '@radix-ui/react-navigation-menu';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { 
+  LayoutDashboard, 
+  Users, 
+  Calendar, 
+  Palmtree, 
+  BarChart3, 
+  Settings 
+} from 'lucide-react';
 
 const navigationItems = [
-  { name: 'Dashboard', href: '/dashboard' },
-  { name: 'Employees', href: '/employees' },
-  { name: 'Schedule', href: '/schedule' },
-  { name: 'Holidays', href: '/holidays' },
-  { name: 'Reports', href: '/reports' },
-  { name: 'Settings', href: '/settings' },
+  { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
+  { name: 'Employees', href: '/employees', icon: Users },
+  { name: 'Schedule', href: '/schedule', icon: Calendar },
+  { name: 'Holidays', href: '/holidays', icon: Palmtree },
+  { name: 'Reports', href: '/reports', icon: BarChart3 },
+  { name: 'Settings', href: '/settings', icon: Settings },
 ];
 
 export default function Sidebar() {
@@ -47,12 +55,13 @@ export default function Sidebar() {
                 <NavigationMenu.Item key={item.href}>
                   <Link
                     href={item.href}
-                    className={`block px-4 py-2 rounded-lg transition-colors ${
+                    className={`flex items-center px-4 py-2 rounded-lg transition-colors ${
                       pathname === item.href
                         ? 'bg-blue-600 text-white'
                         : 'text-gray-300 hover:bg-gray-800 dark:hover:bg-gray-900'
                     }`}
                   >
+                    <item.icon className="w-5 h-5 mr-3" />
                     {item.name}
                   </Link>
                 </NavigationMenu.Item>

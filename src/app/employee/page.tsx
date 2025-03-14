@@ -115,8 +115,8 @@ export default function EmployeeDashboard() {
   // Add a date formatting helper function
   const formatDate = (dateString: string, options: Intl.DateTimeFormatOptions) => {
     const date = new Date(dateString);
-    // Use en-GB for consistent date formatting
-    return date.toLocaleDateString('en-GB', options);
+    // Use en-US for consistent date formatting across all components
+    return date.toLocaleDateString('en-US', options);
   };
 
   const getDateLabel = (date: Date) => {
@@ -134,10 +134,11 @@ export default function EmployeeDashboard() {
     if (diffDays === 1) return 'Tomorrow';
     if (diffDays === -1) return 'Yesterday';
     
-    return selectedDay.toLocaleDateString('en-GB', {
+    return formatDate(selectedDay.toISOString(), {
       weekday: 'long',
       month: 'long',
       day: 'numeric',
+      year: 'numeric'
     });
   };
 
