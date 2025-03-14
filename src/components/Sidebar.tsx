@@ -96,7 +96,7 @@ export default function Sidebar() {
       {/* Sidebar */}
       <aside className={`fixed bg-gray-900 dark:bg-gray-950 text-white transition-all duration-300 overflow-y-auto
         md:left-0 md:top-16 md:bottom-0 ${isCollapsed ? 'md:w-20' : 'md:w-64'}
-        left-0 right-0 bottom-0 md:h-auto h-20`}>
+        left-0 right-0 bottom-0 md:h-auto h-20 z-10`}>
         <div className={`h-full flex ${isCollapsed ? 'md:px-2' : 'md:px-4 md:px-6'} transition-all duration-300
           md:flex-col md:py-4 md:py-6
           px-2 py-1 flex-row items-center justify-around md:items-stretch`}>
