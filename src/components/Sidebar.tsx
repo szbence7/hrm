@@ -94,23 +94,30 @@ export default function Sidebar() {
       </div>
 
       {/* Sidebar */}
-      <aside className={`${isCollapsed ? 'w-20' : 'w-64'} fixed left-0 top-16 bottom-0 bg-gray-900 dark:bg-gray-950 text-white transition-all duration-300 overflow-y-auto`}>
-        <div className={`${isCollapsed ? 'px-2' : 'px-4 md:px-6'} py-4 md:py-6 h-full flex flex-col transition-all duration-300`}>
+      <aside className={`fixed bg-gray-900 dark:bg-gray-950 text-white transition-all duration-300 overflow-y-auto
+        md:left-0 md:top-16 md:bottom-0 ${isCollapsed ? 'md:w-20' : 'md:w-64'}
+        left-0 right-0 bottom-0 md:h-auto h-20`}>
+        <div className={`h-full flex ${isCollapsed ? 'md:px-2' : 'md:px-4 md:px-6'} transition-all duration-300
+          md:flex-col md:py-4 md:py-6
+          px-2 py-1 flex-row items-center justify-around md:items-stretch`}>
           <NavigationMenu.Root className="relative flex-grow">
-            <NavigationMenu.List className="flex flex-col gap-1 md:gap-2">
+            <NavigationMenu.List className="flex md:flex-col gap-1 md:gap-2 justify-around md:justify-start">
               {navigationItems.map((item) => (
-                <NavigationMenu.Item key={item.href}>
+                <NavigationMenu.Item key={item.href} className="flex flex-col items-center md:block">
                   <Link
                     href={item.href}
-                    className={`group flex items-center ${isCollapsed ? 'px-2' : 'px-3 md:px-4'} py-2 rounded-lg transition-colors ${
-                      pathname === item.href
+                    className={`group flex flex-col md:flex-row items-center 
+                      ${isCollapsed ? 'md:px-2' : 'md:px-3 md:px-4'} 
+                      px-2 py-1 md:py-2 rounded-lg transition-colors 
+                      ${pathname === item.href
                         ? 'bg-blue-600'
                         : 'hover:bg-gray-800 dark:hover:bg-gray-900'
-                    } ${isCollapsed ? 'justify-center' : ''}`}
+                      } ${isCollapsed ? 'md:justify-center' : ''}`}
                   >
                     <item.icon 
-                      className={`w-5 h-5 ${isCollapsed ? '' : 'mr-3'} ${
-                        pathname === item.href 
+                      className={`w-5 h-5 ${
+                        isCollapsed ? '' : 'md:mr-3'
+                      } ${pathname === item.href 
                           ? 'text-white' 
                           : 'text-gray-400 group-hover:text-white'
                       }`}
@@ -119,7 +126,8 @@ export default function Sidebar() {
                       pathname === item.href 
                         ? 'text-white' 
                         : 'text-gray-400 group-hover:text-white'
-                    } ${isCollapsed ? 'hidden' : 'block'} text-sm md:text-base`}>
+                      } ${isCollapsed ? 'md:hidden' : 'md:block'} 
+                      text-xs md:text-base mt-1 md:mt-0`}>
                       {item.name}
                     </span>
                   </Link>
@@ -128,10 +136,12 @@ export default function Sidebar() {
             </NavigationMenu.List>
           </NavigationMenu.Root>
           
-          {/* Toggle Button */}
+          {/* Toggle Button - Only visible on desktop */}
           <button
             onClick={() => setIsCollapsed(!isCollapsed)}
-            className={`mt-4 flex items-center justify-center w-full ${isCollapsed ? 'px-2' : 'px-3 md:px-4'} py-2 text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition-colors`}
+            className={`mt-4 hidden md:flex items-center justify-center w-full 
+              ${isCollapsed ? 'px-2' : 'px-3 md:px-4'} 
+              py-2 text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition-colors`}
           >
             {isCollapsed ? <ChevronRight className="w-5 h-5" /> : <ChevronLeft className="w-5 h-5" />}
             <span className={`ml-2 ${isCollapsed ? 'hidden' : 'block'} text-sm md:text-base`}>
