@@ -2,6 +2,7 @@
 
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
+import { User } from 'lucide-react';
 
 interface UserProfile {
   first_name: string;
@@ -55,9 +56,21 @@ export default function ProfilePage() {
     return <div className="p-8">Error loading profile</div>;
   }
 
+  const getInitials = (firstName: string, lastName: string) => {
+    return `${firstName[0]}${lastName[0]}`.toUpperCase();
+  };
+
   return (
     <div className="p-8">
-      <h1 className="text-3xl font-bold mb-8">My Profile</h1>
+      <div className="flex flex-col items-center mb-8">
+        <div className="relative w-32 h-32 mb-4">
+          <div className="w-full h-full rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-3xl font-bold text-gray-600 dark:text-gray-300">
+            {getInitials(profile.first_name, profile.last_name)}
+          </div>
+        </div>
+        <h1 className="text-3xl font-bold">{profile.first_name} {profile.last_name}</h1>
+        <p className="text-gray-500 dark:text-gray-400 mt-1">{profile.position}</p>
+      </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
