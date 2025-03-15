@@ -61,7 +61,7 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="p-8">
+    <div className="space-y-6">
       <div className="flex flex-col items-center mb-8">
         <div className="relative w-32 h-32 mb-4">
           <div className="w-full h-full rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-3xl font-bold text-gray-600 dark:text-gray-300">

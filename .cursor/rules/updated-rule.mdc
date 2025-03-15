@@ -40,6 +40,10 @@ alwaysApply: false
         "react-dom": "latest",
         "tailwindcss": "latest",
         "@radix-ui/react-*": "latest"
+      },
+      "restrictions": {
+        "allow-only": ["next", "react", "react-dom", "tailwindcss", "@radix-ui/react-*"],
+        "prevent-install": true
       }
     },
     "styling": {
@@ -86,12 +90,22 @@ alwaysApply: false
         "import-order": "top-level dependencies first, local components last"
       }
     },
-    "modification-rules": {
-      "description": "Only modify what is explicitly requested. If a technical change is requested, the design must remain untouched.",
+    "modification-restrictions": {
+      "description": "Strictly prohibit any modifications that were not explicitly requested by the user.",
       "enforce": true,
       "rules": {
-        "modify-only-on-request": true,
-        "preserve-design-on-technical-changes": true
+        "no-unrequested-modifications": {
+          "description": "Cursor must NOT create, delete, or modify any files or code unless explicitly requested by the user.",
+          "enforce": true
+        },
+        "preserve-existing-structure": {
+          "description": "Do not restructure files or components unless explicitly instructed.",
+          "enforce": true
+        },
+        "no-unapproved-deletions": {
+          "description": "No files, components, or dependencies may be removed unless the user has explicitly approved their deletion.",
+          "enforce": true
+        }
       }
     },
     "mobile-optimization": {
