@@ -13,16 +13,12 @@ import {
   Settings,
   ChevronLeft,
   ChevronRight,
-  HomeIcon,
-  UserIcon,
-  ClockIcon,
-  CalendarIcon,
-  Cog6ToothIcon
+  User
 } from 'lucide-react';
 
 const navigationItems = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
-  { name: 'Profile', href: '/profile', icon: HomeIcon },
+  { name: 'Profile', href: '/profile', icon: User },
   { name: 'Employees', href: '/employees', icon: Users },
   { name: 'Schedule', href: '/schedule', icon: Calendar },
   { name: 'Holidays', href: '/holidays', icon: Palmtree },
