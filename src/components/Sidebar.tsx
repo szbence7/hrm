@@ -19,9 +19,10 @@ import {
 const navigationItems = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
   { name: 'Profile', href: '/profile', icon: User },
-  { name: 'Employees', href: '/employees', icon: Users },
   { name: 'Schedule', href: '/schedule', icon: Calendar },
   { name: 'Holidays', href: '/holidays', icon: Palmtree },
+  { name: 'My Schedule', href: '/myschedule', icon: Calendar },
+  { name: 'My Holidays', href: '/myholidays', icon: Palmtree },
   { name: 'Reports', href: '/reports', icon: BarChart3 },
   { name: 'Settings', href: '/settings', icon: Settings },
 ];
