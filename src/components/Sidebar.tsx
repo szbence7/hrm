@@ -12,11 +12,17 @@ import {
   BarChart3, 
   Settings,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  HomeIcon,
+  UserIcon,
+  ClockIcon,
+  CalendarIcon,
+  Cog6ToothIcon
 } from 'lucide-react';
 
 const navigationItems = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
+  { name: 'Profile', href: '/profile', icon: HomeIcon },
   { name: 'Employees', href: '/employees', icon: Users },
   { name: 'Schedule', href: '/schedule', icon: Calendar },
   { name: 'Holidays', href: '/holidays', icon: Palmtree },
