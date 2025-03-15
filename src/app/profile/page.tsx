@@ -73,7 +73,7 @@ export default function ProfilePage() {
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
           <h2 className="text-xl font-semibold mb-4">Personal Information</h2>
           <div className="space-y-4">
             <div>
@@ -95,7 +95,7 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
           <h2 className="text-xl font-semibold mb-4">Contact Information</h2>
           <div className="space-y-4">
             <div>
@@ -113,7 +113,7 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
           <h2 className="text-xl font-semibold mb-4">Employment Details</h2>
           <div className="space-y-4">
             <div>
@@ -135,7 +135,7 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
           <h2 className="text-xl font-semibold mb-4">Salary Information</h2>
           <div className="space-y-4">
             <div>
