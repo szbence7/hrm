@@ -1,48 +1,68 @@
 'use client';
 
 import { MagnifyingGlassIcon, PlusIcon } from '@heroicons/react/24/outline';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import EmployeeDetailsModal from '@/components/EmployeeDetailsModal';
+import AddEmployeeModal from '@/components/AddEmployeeModal';
 
 interface Employee {
-  name: string;
+  id: string;
+  first_name: string;
+  last_name: string;
   email: string;
   department: string;
   position: string;
   status: string;
-  birthDate: string;
 }
-
-const MOCK_EMPLOYEES: Employee[] = [
-  {
-    name: 'Sarah Chen',
-    email: 'sarah.chen@company.com',
-    department: 'Engineering',
-    position: 'Senior Developer',
-    status: 'Active',
-    birthDate: '1988-05-15',
-  },
-  {
-    name: 'Alex Kim',
-    email: 'alex.kim@company.com',
-    department: 'Marketing',
-    position: 'Marketing Manager',
-    status: 'On Leave',
-    birthDate: '1992-09-23',
-  },
-  {
-    name: 'Maria Garcia',
-    email: 'maria.garcia@company.com',
-    department: 'Sales',
-    position: 'Sales Representative',
-    status: 'Inactive',
-    birthDate: '1985-03-10',
-  },
-];
 
 export default function EmployeesPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [employees, setEmployees] = useState<Employee[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    fetchEmployees();
+  }, []);
+
+  const fetchEmployees = async () => {
+    try {
+      const response = await fetch('/api/employees');
+      if (!response.ok) {
+        throw new Error('Failed to fetch employees');
+      }
+      const data = await response.json();
+      setEmployees(data);
+    } catch (error) {
+      console.error('Error fetching employees:', error);
+      // TODO: Show error message to user
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleAddEmployee = async (employeeData: any) => {
+    try {
+      const response = await fetch('/api/employees', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(employeeData),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to add employee');
+      }
+
+      // Refresh the employee list
+      fetchEmployees();
+    } catch (error) {
+      console.error('Error adding employee:', error);
+      // TODO: Show error message to user
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -51,7 +71,10 @@ export default function EmployeesPage() {
           <h1 className="text-3xl font-bold dark:text-white">Employees</h1>
           <p className="mt-2 text-gray-600 dark:text-gray-400">Manage your organization's employees</p>
         </div>
-        <button className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+        <button 
+          onClick={() => setShowAddModal(true)}
+          className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+        >
           <PlusIcon className="w-5 h-5 mr-2" />
           Add Employee
         </button>
@@ -98,17 +121,25 @@ export default function EmployeesPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-                {MOCK_EMPLOYEES.map((employee) => (
-                  <tr key={employee.email} className="hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                {isLoading ? (
+                  <tr>
+                    <td colSpan={5} className="py-4 text-center text-gray-500 dark:text-gray-400">
+                      Loading...
+                    </td>
+                  </tr>
+                ) : employees.map((employee) => (
+                  <tr key={employee.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50">
                     <td className="py-4">
                       <div className="flex items-center">
                         <img
-                          src={`https://ui-avatars.com/api/?name=${encodeURIComponent(employee.name)}`}
-                          alt={employee.name}
+                          src={`https://ui-avatars.com/api/?name=${encodeURIComponent(`${employee.first_name} ${employee.last_name}`)}`}
+                          alt={`${employee.first_name} ${employee.last_name}`}
                           className="w-8 h-8 rounded-full"
                         />
                         <div className="ml-3">
-                          <p className="text-sm font-medium text-gray-900 dark:text-white">{employee.name}</p>
+                          <p className="text-sm font-medium text-gray-900 dark:text-white">
+                            {employee.first_name} {employee.last_name}
+                          </p>
                           <p className="text-sm text-gray-500 dark:text-gray-400">{employee.email}</p>
                         </div>
                       </div>
@@ -121,13 +152,14 @@ export default function EmployeesPage() {
                     </td>
                     <td className="py-4">
                       <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        employee.status === 'Active'
+                        employee.status === 'ACTIVE'
                           ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300'
-                          : employee.status === 'On Leave'
+                          : employee.status === 'ON_LEAVE'
                           ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300'
                           : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
                       }`}>
-                        {employee.status}
+                        {employee.status === 'ACTIVE' ? 'Active' : 
+                         employee.status === 'ON_LEAVE' ? 'On Leave' : 'Inactive'}
                       </span>
                     </td>
                     <td className="py-4">
@@ -144,20 +176,26 @@ export default function EmployeesPage() {
             </table>
           </div>
 
-          <div className="mt-6 flex items-center justify-between">
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              Showing <span className="font-medium">1</span> to <span className="font-medium">3</span> of{' '}
-              <span className="font-medium">3</span> results
-            </p>
-            <div className="flex space-x-2">
-              <button className="px-3 py-1 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 text-sm disabled:opacity-50 disabled:cursor-not-allowed" disabled>
-                Previous
-              </button>
-              <button className="px-3 py-1 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 text-sm hover:bg-gray-50 dark:hover:bg-gray-600">
-                Next
-              </button>
+          {!isLoading && employees.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-gray-500 dark:text-gray-400">No employees found</p>
             </div>
-          </div>
+          ) : !isLoading && (
+            <div className="mt-6 flex items-center justify-between">
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                Showing <span className="font-medium">1</span> to <span className="font-medium">{employees.length}</span> of{' '}
+                <span className="font-medium">{employees.length}</span> results
+              </p>
+              <div className="flex space-x-2">
+                <button className="px-3 py-1 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 text-sm disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                  Previous
+                </button>
+                <button className="px-3 py-1 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 text-sm hover:bg-gray-50 dark:hover:bg-gray-600">
+                  Next
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
@@ -168,6 +206,12 @@ export default function EmployeesPage() {
           employee={selectedEmployee}
         />
       )}
+
+      <AddEmployeeModal
+        isOpen={showAddModal}
+        onClose={() => setShowAddModal(false)}
+        onSubmit={handleAddEmployee}
+      />
     </div>
   );
 } 
